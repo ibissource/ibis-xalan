@@ -3,12 +3,15 @@
 	<property file="build.properties"/>
 	<property name="build.dir" value="build"/>
 	<property name="xalan.version" value="xalan-j_2_7_1"/>
+	<property name="ibis-xalan.version" value="2.7.1.1"/>
 	<property name="src.dir" value="${build.dir}/${xalan.version}/src"/>
 
 	<target name="jar" description="Create jar files and update testproject">
 		<delete dir="${build.dir}"/>
 		
 		<unzip src="${basedir}/${xalan.version}-src.zip" dest="${build.dir}"/>
+
+		<delete dir="${src.dir}/META-INF"/>
 
 		<move todir="${src.dir}/nl/nn/org">
 			<fileset dir="${src.dir}/org"/>
@@ -29,8 +32,13 @@
 		
 		<ant dir="${build.dir}/${xalan.version}" antfile="build.xml" inheritAll="false"/>
 		
-		<copy file="${build.dir}/${xalan.version}/build/xalan.jar" tofile="${basedir}/IbisXalan.jar"/>
-		<copy file="${build.dir}/${xalan.version}/build/serializer.jar" tofile="${basedir}/IbisXalanSerializer.jar"/>
+		<copy file="${build.dir}/${xalan.version}/build/xalan.jar" tofile="${basedir}/../mvn-repo/releases/org/ibissource/ibis-xalan/${ibis-xalan.version}/ibis-xalan-${ibis-xalan.version}.jar"/>
+		<copy file="ibis-xalan.pom" tofile="${basedir}/../mvn-repo/releases/org/ibissource/ibis-xalan/${ibis-xalan.version}/ibis-xalan-${ibis-xalan.version}.pom"/>
+		<replace file="${basedir}/../mvn-repo/releases/org/ibissource/ibis-xalan/${ibis-xalan.version}/ibis-xalan-${ibis-xalan.version}.pom" token="@version@" value="${ibis-xalan.version}" summary="true"/>
+
+		<copy file="${build.dir}/${xalan.version}/build/serializer.jar" tofile="${basedir}/../mvn-repo/releases/org/ibissource/ibis-xalan-serializer/${ibis-xalan.version}/ibis-xalan-serializer-${ibis-xalan.version}.jar"/>
+		<copy file="ibis-xalan-serializer.pom" tofile="${basedir}/../mvn-repo/releases/org/ibissource/ibis-xalan-serializer/${ibis-xalan.version}/ibis-xalan-serializer-${ibis-xalan.version}.pom"/>
+		<replace file="${basedir}/../mvn-repo/releases/org/ibissource/ibis-xalan-serializer/${ibis-xalan.version}/ibis-xalan-serializer-${ibis-xalan.version}.pom" token="@version@" value="${ibis-xalan.version}" summary="true"/>
 	</target>
 
 </project>
