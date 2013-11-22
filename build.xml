@@ -1,0 +1,36 @@
+<project default="jar">
+
+	<property file="build.properties"/>
+	<property name="build.dir" value="build"/>
+	<property name="xalan.version" value="xalan-j_2_7_1"/>
+	<property name="src.dir" value="${build.dir}/${xalan.version}/src"/>
+
+	<target name="jar" description="Create jar files and update testproject">
+		<delete dir="${build.dir}"/>
+		
+		<unzip src="${basedir}/${xalan.version}-src.zip" dest="${build.dir}"/>
+
+		<move todir="${src.dir}/nl/nn/org">
+			<fileset dir="${src.dir}/org"/>
+		</move>
+				
+		<replace dir="${src.dir}" token="org.apache.xalan" value="nl.nn.org.apache.xalan" summary="true"/>
+		<replace dir="${src.dir}" token="org.apache.xml" value="nl.nn.org.apache.xml" summary="true"/>
+		<replace dir="${src.dir}" token="org.apache.xpath" value="nl.nn.org.apache.xpath" summary="true"/>
+		<replace dir="${src.dir}" token="nl.nn.org.apache.xml.serialize.XMLSerializer" value="org.apache.xml.serialize.XMLSerializer" summary="true"/>
+		
+		<replace file="${build.dir}/${xalan.version}/build.xml" summary="true">
+			<replacefilter token="org/apache/xml" value="nl/nn/org/apache/xml"/>
+			<replacefilter token="nl/nn/org/apache/xmlcommons" value="org/apache/xmlcommons"/>
+			<replacefilter token="org/apache/xpath" value="nl/nn/org/apache/xpath"/>
+			<replacefilter token="org/apache/xalan" value="nl/nn/org/apache/xalan"/>
+			<replacefilter token="org.apache.xalan" value="nl.nn.org.apache.xalan"/>
+		</replace>
+		
+		<ant dir="${build.dir}/${xalan.version}" antfile="build.xml" inheritAll="false"/>
+		
+		<copy file="${build.dir}/${xalan.version}/build/xalan.jar" tofile="${basedir}/IbisXalan.jar"/>
+		<copy file="${build.dir}/${xalan.version}/build/serializer.jar" tofile="${basedir}/IbisXalanSerializer.jar"/>
+	</target>
+
+</project>
